@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle de Figurinhas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .figurinhas-container {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .figurinha {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .figurinha.checked {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .faltantes {
+      background-color: #ffcccc;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Minhas Figurinhas</h1>
+  
+  <div class="faltantes">
+    <h2>Figurinhas Faltantes:</h2>
+    <p id="faltantes-lista"></p>
+  </div>
+
+  <div class="figurinhas-container" id="figurinhas-container">
+    <!-- Figurinhas vão aparecer aqui via JavaScript -->
+  </div>
+
+  <script>
+    // Número total de figurinhas
+    const totalFigurinhas = 120;
+
+    // Array para armazenar as figurinhas que você já tem
+    let figurinhasObtidas = [];
+
+    // Função para criar as figurinhas
+    function criarFigurinhas() {
+      const container = document.getElementById('figurinhas-container');
+      
+      for (let i = 1; i <= totalFigurinhas; i++) {
+        const figurinha = document.createElement('div');
+        figurinha.classList.add('figurinha');
+        figurinha.textContent = i;
+
+        // Ao clicar em uma figurinha, marca ou desmarca
+        figurinha.addEventListener('click', function() {
+          toggleFigurinha(i, figurinha);
+        });
+
+        container.appendChild(figurinha);
+      }
+
+      atualizarFaltantes();
+    }
+
+    // Função para marcar ou desmarcar uma figurinha
+    function toggleFigurinha(numero, elemento) {
+      const index = figurinhasObtidas.indexOf(numero);
+      if (index === -1) {
+        figurinhasObtidas.push(numero);
+        elemento.classList.add('checked');
+      } else {
+        figurinhasObtidas.splice(index, 1);
+        elemento.classList.remove('checked');
+      }
+
+      atualizarFaltantes();
+    }
+
+    // Função para atualizar a lista de figurinhas faltantes
+    function atualizarFaltantes() {
+      const faltantesLista = document.getElementById('faltantes-lista');
+      const figurinhasFaltantes = [];
+
+      for (let i = 1; i <= totalFigurinhas; i++) {
+        if (!figurinhasObtidas.includes(i)) {
+          figurinhasFaltantes.push(i);
+        }
+      }
+
+      faltantesLista.textContent = figurinhasFaltantes.join(', ');
+    }
+
+    // Inicializa a página com as figurinhas
+    criarFigurinhas();
+  </script>
+</body>
+</html>
