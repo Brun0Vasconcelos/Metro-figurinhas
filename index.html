@@ -48,7 +48,7 @@
 </head>
 <body>
   <h1>Minhas Figurinhas</h1>
-  
+ 
   <div class="faltantes">
     <h2>Figurinhas Faltantes:</h2>
     <p id="faltantes-lista"></p>
@@ -62,17 +62,22 @@
     // Número total de figurinhas
     const totalFigurinhas = 120;
 
-    // Array para armazenar as figurinhas que você já tem
-    let figurinhasObtidas = [];
+    // Recupera as figurinhas obtidas do localStorage, se existirem
+    let figurinhasObtidas = JSON.parse(localStorage.getItem('figurinhasObtidas')) || [];
 
     // Função para criar as figurinhas
     function criarFigurinhas() {
       const container = document.getElementById('figurinhas-container');
-      
+     
       for (let i = 1; i <= totalFigurinhas; i++) {
         const figurinha = document.createElement('div');
         figurinha.classList.add('figurinha');
         figurinha.textContent = i;
+
+        // Marcar a figurinha se já foi obtida
+        if (figurinhasObtidas.includes(i)) {
+          figurinha.classList.add('checked');
+        }
 
         // Ao clicar em uma figurinha, marca ou desmarca
         figurinha.addEventListener('click', function() {
@@ -96,6 +101,9 @@
         elemento.classList.remove('checked');
       }
 
+      // Atualiza o localStorage
+      localStorage.setItem('figurinhasObtidas', JSON.stringify(figurinhasObtidas));
+      
       atualizarFaltantes();
     }
 
