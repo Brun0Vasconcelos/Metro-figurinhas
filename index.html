@@ -48,11 +48,46 @@
       color: white;
     }
 
-    .faltantes {
+    .faltantes, .repetidas {
       background-color: #ffcccc;
       padding: 10px;
       border-radius: 5px;
       margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .adicionar-repetida {
+      margin-top: 20px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #d32f2f;
     }
   </style>
 </head>
@@ -69,70 +104,33 @@
     <!-- Figurinhas vão aparecer aqui via JavaScript -->
   </div>
 
+  <div class="repetidas">
+    <h2>Figurinhas Repetidas</h2>
+    <table id="tabela-repetidas">
+      <thead>
+        <tr>
+          <th>Figurinha</th>
+          <th>Quantidade</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Figurinhas repetidas vão aparecer aqui -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="adicionar-repetida">
+    <h2>Adicionar Figurinha Repetida</h2>
+    <input type="number" id="figurinha-repetida" placeholder="Número da Figurinha" min="1" max="120" />
+    <input type="number" id="quantidade-repetida" placeholder="Quantidade" min="1" />
+    <button id="adicionar-repetida">Adicionar</button>
+  </div>
+
   <script>
     const totalFigurinhas = 120;
     let figurinhasObtidas = JSON.parse(localStorage.getItem('figurinhasObtidas')) || [];
+    let figurinhasRepetidas = JSON.parse(localStorage.getItem('figurinhasRepetidas')) || {};
 
     function criarFigurinhas() {
       const container = document.getElementById('figurinhas-container');
-      container.innerHTML = ''; // Limpa o container antes de recriar as figurinhas
-     
-      for (let i = 1; i <= totalFigurinhas; i++) {
-        const figurinha = document.createElement('div');
-        figurinha.classList.add('figurinha');
-        figurinha.textContent = i;
-        figurinha.setAttribute('tabindex', '0');
-
-        if (figurinhasObtidas.includes(i)) {
-          figurinha.classList.add('checked');
-        }
-
-        figurinha.addEventListener('click', function() {
-          toggleFigurinha(i, figurinha);
-        });
-
-        figurinha.addEventListener('keydown', function(e) {
-          if (e.key === 'Enter' || e.key === ' ') {
-            toggleFigurinha(i, figurinha);
-          }
-        });
-
-        container.appendChild(figurinha);
-      }
-
-      atualizarFaltantes();
-    }
-
-    function toggleFigurinha(numero, elemento) {
-      const index = figurinhasObtidas.indexOf(numero);
-      if (index === -1) {
-        figurinhasObtidas.push(numero);
-        elemento.classList.add('checked');
-      } else {
-        figurinhasObtidas.splice(index, 1);
-        elemento.classList.remove('checked');
-      }
-
-      localStorage.setItem('figurinhasObtidas', JSON.stringify(figurinhasObtidas));
-      atualizarFaltantes();
-    }
-
-    function atualizarFaltantes() {
-      const faltantesLista = document.getElementById('faltantes-lista');
-      const contadorFaltantes = document.getElementById('contador-faltantes');
-      const figurinhasFaltantes = [];
-
-      for (let i = 1; i <= totalFigurinhas; i++) {
-        if (!figurinhasObtidas.includes(i)) {
-          figurinhasFaltantes.push(i);
-        }
-      }
-
-      faltantesLista.textContent = figurinhasFaltantes.join(', ');
-      contadorFaltantes.textContent = `Total de Figurinhas Faltantes: ${figurinhasFaltantes.length}`;
-    }
-
-    criarFigurinhas();
-  </script>
-</body>
-</html>
+      container.innerHTML = '';
