@@ -5,95 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Controle de Figurinhas</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
-      margin: 0;
-      padding: 20px;
-    }
-
-    h1 {
-      text-align: center;
-    }
-
-    .figurinhas-container {
-      display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    @media (max-width: 600px) {
-      .figurinhas-container {
-        grid-template-columns: repeat(5, 1fr);
-      }
-    }
-
-    .figurinha {
-      background-color: #fff;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    .figurinha:hover {
-      background-color: #e0e0e0;
-    }
-
-    .figurinha.checked {
-      background-color: #4CAF50;
-      color: white;
-    }
-
-    .faltantes, .repetidas {
-      background-color: #ffcccc;
-      padding: 10px;
-      border-radius: 5px;
-      margin-bottom: 20px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: center;
-    }
-
-    th {
-      background-color: #f2f2f2;
-    }
-
-    .adicionar-repetida {
-      margin-top: 20px;
-    }
-
-    button {
-      margin-top: 10px;
-      padding: 10px 20px;
-      background-color: #f44336;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    button:hover {
-      background-color: #d32f2f;
-    }
+    /* Estilos do corpo */
+    body { font-family: Arial, sans-serif; background-color: #f0f0f0; margin: 0; padding: 20px; }
+    h1 { text-align: center; }
+    .figurinhas-container { display: grid; grid-template-columns: repeat(10, 1fr); gap: 10px; margin-bottom: 20px; }
+    @media (max-width: 600px) { .figurinhas-container { grid-template-columns: repeat(5, 1fr); } }
+    .figurinha { background-color: #fff; border: 1px solid #ccc; border-radius: 5px; padding: 20px; text-align: center; cursor: pointer; transition: background-color 0.3s; }
+    .figurinha:hover { background-color: #e0e0e0; }
+    .figurinha.checked { background-color: #4CAF50; color: white; }
+    .faltantes, .repetidas { background-color: #ffcccc; padding: 10px; border-radius: 5px; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    th { background-color: #f2f2f2; }
+    .adicionar-repetida { margin-top: 20px; }
+    button { margin-top: 10px; padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+    button:hover { background-color: #d32f2f; }
+    .btn-counter { padding: 5px; margin: 0 2px; }
   </style>
 </head>
 <body>
   <h1>Minhas Figurinhas</h1>
- 
+
   <div class="faltantes">
     <h2>Figurinhas Faltantes:</h2>
     <p id="faltantes-lista"></p>
@@ -111,6 +43,7 @@
         <tr>
           <th>Figurinha</th>
           <th>Quantidade</th>
+          <th>Ações</th>
         </tr>
       </thead>
       <tbody>
@@ -134,27 +67,15 @@
     function criarFigurinhas() {
       const container = document.getElementById('figurinhas-container');
       container.innerHTML = ''; // Limpa o container antes de recriar as figurinhas
-     
+
       for (let i = 1; i <= totalFigurinhas; i++) {
         const figurinha = document.createElement('div');
         figurinha.classList.add('figurinha');
         figurinha.textContent = i;
-        figurinha.setAttribute('tabindex', '0');
 
-        if (figurinhasObtidas.includes(i)) {
-          figurinha.classList.add('checked');
-        }
+        if (figurinhasObtidas.includes(i)) figurinha.classList.add('checked');
 
-        figurinha.addEventListener('click', function() {
-          toggleFigurinha(i, figurinha);
-        });
-
-        figurinha.addEventListener('keydown', function(e) {
-          if (e.key === 'Enter' || e.key === ' ') {
-            toggleFigurinha(i, figurinha);
-          }
-        });
-
+        figurinha.addEventListener('click', () => toggleFigurinha(i, figurinha));
         container.appendChild(figurinha);
       }
 
@@ -182,9 +103,7 @@
       const figurinhasFaltantes = [];
 
       for (let i = 1; i <= totalFigurinhas; i++) {
-        if (!figurinhasObtidas.includes(i)) {
-          figurinhasFaltantes.push(i);
-        }
+        if (!figurinhasObtidas.includes(i)) figurinhasFaltantes.push(i);
       }
 
       faltantesLista.textContent = figurinhasFaltantes.join(', ');
@@ -199,10 +118,43 @@
         const novaLinha = tabela.insertRow();
         const celulaFigurinha = novaLinha.insertCell(0);
         const celulaQuantidade = novaLinha.insertCell(1);
+        const celulaAcoes = novaLinha.insertCell(2);
 
         celulaFigurinha.textContent = figurinha;
         celulaQuantidade.textContent = quantidade;
+
+        // Botões de ação para cada figurinha
+        const btnAumentar = document.createElement('button');
+        btnAumentar.textContent = '+';
+        btnAumentar.classList.add('btn-counter');
+        btnAumentar.addEventListener('click', () => alterarQuantidade(figurinha, 1));
+
+        const btnDiminuir = document.createElement('button');
+        btnDiminuir.textContent = '-';
+        btnDiminuir.classList.add('btn-counter');
+        btnDiminuir.addEventListener('click', () => alterarQuantidade(figurinha, -1));
+
+        const btnZerar = document.createElement('button');
+        btnZerar.textContent = 'Zerar';
+        btnZerar.classList.add('btn-counter');
+        btnZerar.addEventListener('click', () => alterarQuantidade(figurinha, 0));
+
+        celulaAcoes.appendChild(btnAumentar);
+        celulaAcoes.appendChild(btnDiminuir);
+        celulaAcoes.appendChild(btnZerar);
       }
+    }
+
+    function alterarQuantidade(figurinha, valor) {
+      if (valor === 0) {
+        delete figurinhasRepetidas[figurinha];
+      } else {
+        figurinhasRepetidas[figurinha] = Math.max(0, (figurinhasRepetidas[figurinha] || 0) + valor);
+        if (figurinhasRepetidas[figurinha] === 0) delete figurinhasRepetidas[figurinha];
+      }
+
+      localStorage.setItem('figurinhasRepetidas', JSON.stringify(figurinhasRepetidas));
+      atualizarTabelaRepetidas();
     }
 
     document.getElementById('adicionar-repetida').addEventListener('click', function() {
@@ -210,12 +162,7 @@
       const quantidade = parseInt(document.getElementById('quantidade-repetida').value);
 
       if (figurinha >= 1 && figurinha <= totalFigurinhas && quantidade > 0) {
-        if (figurinhasRepetidas[figurinha]) {
-          figurinhasRepetidas[figurinha] += quantidade;
-        } else {
-          figurinhasRepetidas[figurinha] = quantidade;
-        }
-
+        figurinhasRepetidas[figurinha] = (figurinhasRepetidas[figurinha] || 0) + quantidade;
         localStorage.setItem('figurinhasRepetidas', JSON.stringify(figurinhasRepetidas));
         atualizarTabelaRepetidas();
         document.getElementById('figurinha-repetida').value = '';
@@ -227,5 +174,4 @@
 
     criarFigurinhas();
   </script>
-</body>
-</html>
+</body
