@@ -52,7 +52,6 @@
   <div class="faltantes">
     <h2>Figurinhas Faltantes:</h2>
     <p id="faltantes-lista"></p>
-    <p id="contagem-faltantes"></p>
   </div>
 
   <div class="figurinhas-container" id="figurinhas-container">
@@ -111,4 +110,19 @@
     // Função para atualizar a lista de figurinhas faltantes
     function atualizarFaltantes() {
       const faltantesLista = document.getElementById('faltantes-lista');
-      const contagemFaltantes = document
+      const figurinhasFaltantes = [];
+
+      for (let i = 1; i <= totalFigurinhas; i++) {
+        if (!figurinhasObtidas.includes(i)) {
+          figurinhasFaltantes.push(i);
+        }
+      }
+
+      faltantesLista.textContent = figurinhasFaltantes.join(', ');
+    }
+
+    // Inicializa a página com as figurinhas
+    criarFigurinhas();
+  </script>
+</body>
+</html>
