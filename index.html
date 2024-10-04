@@ -23,6 +23,12 @@
       margin-bottom: 20px;
     }
 
+    @media (max-width: 600px) {
+      .figurinhas-container {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+
     .figurinha {
       background-color: #fff;
       border: 1px solid #ccc;
@@ -31,6 +37,10 @@
       text-align: center;
       cursor: pointer;
       transition: background-color 0.3s;
+    }
+
+    .figurinha:hover {
+      background-color: #e0e0e0;
     }
 
     .figurinha.checked {
@@ -52,6 +62,7 @@
   <div class="faltantes">
     <h2>Figurinhas Faltantes:</h2>
     <p id="faltantes-lista"></p>
+    <p id="contador-faltantes"></p>
   </div>
 
   <div class="figurinhas-container" id="figurinhas-container">
@@ -59,29 +70,31 @@
   </div>
 
   <script>
-    // Número total de figurinhas
     const totalFigurinhas = 120;
-
-    // Recupera as figurinhas obtidas do localStorage, se existirem
     let figurinhasObtidas = JSON.parse(localStorage.getItem('figurinhasObtidas')) || [];
 
-    // Função para criar as figurinhas
     function criarFigurinhas() {
       const container = document.getElementById('figurinhas-container');
+      container.innerHTML = ''; // Limpa o container antes de recriar as figurinhas
      
       for (let i = 1; i <= totalFigurinhas; i++) {
         const figurinha = document.createElement('div');
         figurinha.classList.add('figurinha');
         figurinha.textContent = i;
+        figurinha.setAttribute('tabindex', '0');
 
-        // Marcar a figurinha se já foi obtida
         if (figurinhasObtidas.includes(i)) {
           figurinha.classList.add('checked');
         }
 
-        // Ao clicar em uma figurinha, marca ou desmarca
         figurinha.addEventListener('click', function() {
           toggleFigurinha(i, figurinha);
+        });
+
+        figurinha.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            toggleFigurinha(i, figurinha);
+          }
         });
 
         container.appendChild(figurinha);
@@ -90,7 +103,6 @@
       atualizarFaltantes();
     }
 
-    // Função para marcar ou desmarcar uma figurinha
     function toggleFigurinha(numero, elemento) {
       const index = figurinhasObtidas.indexOf(numero);
       if (index === -1) {
@@ -101,15 +113,13 @@
         elemento.classList.remove('checked');
       }
 
-      // Atualiza o localStorage
       localStorage.setItem('figurinhasObtidas', JSON.stringify(figurinhasObtidas));
-      
       atualizarFaltantes();
     }
 
-    // Função para atualizar a lista de figurinhas faltantes
     function atualizarFaltantes() {
       const faltantesLista = document.getElementById('faltantes-lista');
+      const contadorFaltantes = document.getElementById('contador-faltantes');
       const figurinhasFaltantes = [];
 
       for (let i = 1; i <= totalFigurinhas; i++) {
@@ -119,9 +129,9 @@
       }
 
       faltantesLista.textContent = figurinhasFaltantes.join(', ');
+      contadorFaltantes.textContent = `Total de Figurinhas Faltantes: ${figurinhasFaltantes.length}`;
     }
 
-    // Inicializa a página com as figurinhas
     criarFigurinhas();
   </script>
 </body>
