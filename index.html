@@ -25,6 +25,7 @@
   </style>
 </head>
 <body>
+  
   <div class="mensagem-completa" id="mensagem-completa" style="display: none;">
     Parabéns, você completou o álbum em comemoração dos 50 anos de Operação do Metrô de São Paulo!
   </div>
@@ -62,6 +63,11 @@
     <input type="number" id="figurinha-repetida" placeholder="Número da Figurinha" min="1" max="120" />
     <input type="number" id="quantidade-repetida" placeholder="Quantidade" min="1" />
     <button id="adicionar-repetida">Adicionar</button>
+  </div>
+
+  <!-- Div onde a mensagem de "Parabéns" será exibida -->
+  <div class="mensagem-completa" id="mensagem-completa" style="display: none;">
+    Parabéns, você completou o álbum em comemoração dos 50 anos de Operação do Metrô de São Paulo!
   </div>
 
   <script>
@@ -113,6 +119,13 @@
 
       faltantesLista.textContent = figurinhasFaltantes.join(', ');
       contadorFaltantes.textContent = `Total de Figurinhas Faltantes: ${figurinhasFaltantes.length}`;
+
+      // Verifica se o álbum foi completado
+      if (figurinhasFaltantes.length === 0) {
+        document.getElementById('mensagem-completa').style.display = 'block';
+      } else {
+        document.getElementById('mensagem-completa').style.display = 'none';
+      }
     }
 
     function atualizarTabelaRepetidas() {
@@ -179,4 +192,5 @@
 
     criarFigurinhas();
   </script>
-</body
+</body>
+</html>
