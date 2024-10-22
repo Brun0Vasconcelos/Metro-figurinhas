@@ -25,12 +25,19 @@
   </style>
 </head>
 <body>
-  
+
+  <!-- Div onde a mensagem de "Parabéns" será exibida no topo -->
   <div class="mensagem-completa" id="mensagem-completa" style="display: none;">
     Parabéns, você completou o álbum em comemoração dos 50 anos de Operação do Metrô de São Paulo!
   </div>
 
   <h1>Minhas Figurinhas</h1>
+
+  <!-- Exibir as figurinhas repetidas no topo -->
+  <div class="repetidas">
+    <h2>Figurinhas Repetidas (Resumo):</h2>
+    <p id="repetidas"></p>
+  </div>
 
   <div class="faltantes">
     <h2>Figurinhas Faltantes:</h2>
@@ -42,8 +49,9 @@
     <!-- Figurinhas vão aparecer aqui via JavaScript -->
   </div>
 
+  <!-- Tabela com figurinhas repetidas -->
   <div class="repetidas">
-    <h2>Figurinhas Repetidas</h2>
+    <h2>Figurinhas Repetidas (Tabela)</h2>
     <table id="tabela-repetidas">
       <thead>
         <tr>
@@ -63,11 +71,6 @@
     <input type="number" id="figurinha-repetida" placeholder="Número da Figurinha" min="1" max="120" />
     <input type="number" id="quantidade-repetida" placeholder="Quantidade" min="1" />
     <button id="adicionar-repetida">Adicionar</button>
-  </div>
-
-  <!-- Div onde a mensagem de "Parabéns" será exibida -->
-  <div class="mensagem-completa" id="mensagem-completa" style="display: none;">
-    Parabéns, você completou o álbum em comemoração dos 50 anos de Operação do Metrô de São Paulo!
   </div>
 
   <script>
@@ -130,7 +133,11 @@
 
     function atualizarTabelaRepetidas() {
       const tabela = document.getElementById('tabela-repetidas').getElementsByTagName('tbody')[0];
+      const listaRepetidas = document.getElementById('repetidas');
       tabela.innerHTML = ''; // Limpa a tabela antes de atualizar
+      listaRepetidas.innerHTML = ''; // Limpa a lista de figurinhas repetidas
+
+      const listaNumerosRepetidos = [];
 
       for (const [figurinha, quantidade] of Object.entries(figurinhasRepetidas)) {
         const novaLinha = tabela.insertRow();
@@ -140,6 +147,9 @@
 
         celulaFigurinha.textContent = figurinha;
         celulaQuantidade.textContent = quantidade;
+
+        // Adiciona figurinha à lista de números repetidos
+        listaNumerosRepetidos.push(figurinha);
 
         // Botões de ação para cada figurinha
         const btnAumentar = document.createElement('button');
@@ -161,6 +171,9 @@
         celulaAcoes.appendChild(btnDiminuir);
         celulaAcoes.appendChild(btnZerar);
       }
+
+      // Atualiza a lista de figurinhas repetidas no parágrafo
+      listaRepetidas.textContent = listaNumerosRepetidos.length > 0 ? listaNumerosRepetidos.join(', ') : 'Nenhuma figurinha repetida';
     }
 
     function alterarQuantidade(figurinha, valor) {
